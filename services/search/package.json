@@ -1,0 +1,22 @@
+{
+  "name": "search-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.17",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.7.0",
+    "tsc": "^1.20150623.0"
+  }
+}
