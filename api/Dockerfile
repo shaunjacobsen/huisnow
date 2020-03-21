@@ -1,8 +1,8 @@
 FROM node:13
 WORKDIR /api
 COPY ./package.json .
-COPY ./package-lock.json .
-RUN npm install
+COPY ./yarn.lock .
+RUN yarn
 COPY . .
 EXPOSE 4000
-CMD npm start
+CMD yarn run start

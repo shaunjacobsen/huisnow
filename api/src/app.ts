@@ -2,6 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
+import './config/db';
+
+import Property from './models/Property';
+import UserInterest from './models/UserInterest';
+
+Property;
+UserInterest;
+
 const app = express();
 
 app.use(helmet());
