@@ -3,25 +3,19 @@ services:
   api:
     build:
       context: ./api
+      dockerfile: Dockerfile.dev
     depends_on:
       - postgres
-    environment:
-      DATABASE_URL: postgres://user:pass@postgres:5432/huisnow
-      NODE_ENV: development
-      PORT: 4000
+    env_file: .env
     ports:
       - "4000:4000"
-    command: npm run dev
     volumes:
-      - .:/app/
+      - ./api:/app
       - /app/node_modules
   
   postgres:
     image: postgres:10.4
     ports:
       - "35432:5432"
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: huisnow
+    env_file: .env
     

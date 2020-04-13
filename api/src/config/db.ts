@@ -1,10 +1,6 @@
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize('huisnow', 'user', 'pass', {
-  host: 'localhost',
-  dialect: 'postgres',
-  port: 35432,
-});
+const sequelize = new Sequelize(process.env.DATABASE_URL as string, {});
 
 sequelize
   .authenticate()
