@@ -38,7 +38,7 @@ UserInterest.init(
   { sequelize, tableName: 'user_interests' },
 );
 
-UserInterest.hasOne(Property, { sourceKey: 'id' });
+UserInterest.hasOne(Property, { foreignKey: 'id' });
 
 UserInterest.sync().then(() => console.log('UserInterest table synced'));
 

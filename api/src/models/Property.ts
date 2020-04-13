@@ -6,6 +6,7 @@ class Property extends Model {
   public id!: number;
   public source!: string;
   public sourceIdentifier!: string;
+  public name!: string;
   public type!: string;
   public streetAddress?: string;
   public postcode?: string;
@@ -25,6 +26,7 @@ Property.init(
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     source: DataTypes.STRING,
     sourceIdentifier: DataTypes.STRING,
+    name: DataTypes.STRING,
     type: DataTypes.STRING,
     streetAddress: DataTypes.STRING,
     postcode: DataTypes.STRING,
@@ -35,7 +37,7 @@ Property.init(
     surface: DataTypes.INTEGER,
     images: DataTypes.ARRAY(DataTypes.STRING),
   },
-  { sequelize, tableName: 'properties' },
+  { sequelize, tableName: 'properties', paranoid: true },
 );
 
 Property.sync().then(() => console.log('property table synced'));

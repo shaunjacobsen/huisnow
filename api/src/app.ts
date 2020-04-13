@@ -4,7 +4,7 @@ import helmet from 'helmet';
 
 import './config/db';
 
-import controller from './controllers';
+import mainRouter from './router';
 import Property from './models/Property';
 import UserInterest from './models/UserInterest';
 
@@ -17,8 +17,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-
-app.use('/', controller);
+app.use('/', mainRouter);
 
 const port = process.env.PORT || 4000;
 
