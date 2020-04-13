@@ -9,21 +9,21 @@ function strip(text: string): string {
   return text.replace('\n', '').replace(/\n\s+/g, ' ').trim();
 }
 
-async function run() {
-  let shouldRun = true;
-  let pageUrl =
-    'https://www.pararius.nl/huurwoningen/amsterdam/0-1600/50m2/2-slaapkamers';
-  while (shouldRun) {
-    try {
-      const { data, nextPage } = await crawl(pageUrl);
-      pageUrl = nextPage;
-      shouldRun = !!nextPage;
-      console.log(data, pageUrl);
-    } catch (e) {
-      console.error('RUN ERROR', e);
-    }
-  }
-}
+// async function run() {
+//   let shouldRun = true;
+//   let pageUrl =
+//     'https://www.pararius.nl/huurwoningen/amsterdam/0-1600/50m2/2-slaapkamers';
+//   while (shouldRun) {
+//     try {
+//       const { data, nextPage } = await crawl(pageUrl);
+//       pageUrl = nextPage;
+//       shouldRun = !!nextPage;
+//       console.log(data, pageUrl);
+//     } catch (e) {
+//       console.error('RUN ERROR', e);
+//     }
+//   }
+// }
 
 interface CrawlData {
   data: PropertyData[];
@@ -82,8 +82,8 @@ async function processListing(listing: PropertyData): Promise<PropertyData> {
   const latitude: number = Number(
     $('.listing-detail-map').data('listing-detail-map-latitude'),
   );
-  const longitude: number = $('.listing-detail-map').data(
-    'listing-detail-map-longitude',
+  const longitude: number = Number(
+    $('.listing-detail-map').data('listing-detail-map-longitude'),
   );
 
   return {
@@ -100,7 +100,7 @@ async function processListing(listing: PropertyData): Promise<PropertyData> {
   };
 }
 
-async function crawl(url: string): Promise<CrawlData> {
+export async function crawl(url: string): Promise<CrawlData> {
   const page = await axiosInstance.get(url, {});
   const $ = cheerio.load(page.data);
   // const totalResults = $('.search-results-container .count')
@@ -151,5 +151,3 @@ async function crawl(url: string): Promise<CrawlData> {
     return { data, nextPage: nextPageUrl };
   });
 }
-
-export default run;

@@ -16,6 +16,7 @@ class Property extends Model {
   public price!: number;
   public surface?: number;
   public images?: string[];
+  public availableFrom?: Date;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -36,6 +37,7 @@ Property.init(
     price: DataTypes.INTEGER,
     surface: DataTypes.INTEGER,
     images: DataTypes.ARRAY(DataTypes.STRING),
+    availableFrom: DataTypes.DATE,
   },
   {
     sequelize,

@@ -1,3 +1,10 @@
-import run from './pararius';
+import express from 'express';
 
-run();
+import router from './router';
+
+const app = express();
+app.use(express.json());
+
+app.use('/', router);
+
+app.listen(4001, () => console.log('Up on 4001'));
