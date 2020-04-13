@@ -35,11 +35,15 @@ UserInterest.init(
     viewingTime: DataTypes.TIME,
     viewingNotes: DataTypes.TEXT,
   },
-  { sequelize, tableName: 'user_interests' },
+  { sequelize, tableName: 'user_interests', underscored: true, paranoid: true },
 );
 
-UserInterest.hasOne(Property, { foreignKey: 'id' });
+UserInterest.hasOne(Property, {
+  foreignKey: { name: 'id' },
+});
 
-UserInterest.sync().then(() => console.log('UserInterest table synced'));
+UserInterest.sync({ alter: true }).then(() =>
+  console.log('UserInterest table synced'),
+);
 
 export default UserInterest;

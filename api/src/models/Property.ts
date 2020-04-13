@@ -37,9 +37,15 @@ Property.init(
     surface: DataTypes.INTEGER,
     images: DataTypes.ARRAY(DataTypes.STRING),
   },
-  { sequelize, tableName: 'properties', paranoid: true },
+  {
+    sequelize,
+    tableName: 'properties',
+    indexes: [{ unique: true, fields: ['source', 'source_identifier'] }],
+    underscored: true,
+    paranoid: true,
+  },
 );
 
-Property.sync().then(() => console.log('property table synced'));
+Property.sync({ alter: true }).then(() => console.log('property table synced'));
 
 export default Property;
