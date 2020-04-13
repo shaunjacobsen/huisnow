@@ -1,12 +1,12 @@
 import * as cheerio from 'cheerio';
 import axios from 'axios';
+import srcset from 'srcset';
 import { PropertyData } from './types';
 
+const axiosInstance = axios.create({ baseURL: 'https://www.pararius.nl' });
+
 function strip(text: string): string {
-  return text
-    .replace('\n', '')
-    .replace(/\n\s+/g, ' ')
-    .trim();
+  return text.replace('\n', '').replace(/\n\s+/g, ' ').trim();
 }
 
 async function run() {
@@ -30,88 +30,126 @@ interface CrawlData {
   nextPage: string;
 }
 
+async function processListing(listing: PropertyData): Promise<PropertyData> {
+  const listingPage = await axiosInstance.get(listing.url);
+  const $ = cheerio.load(listingPage.data);
+
+  const images: string[] = [];
+
+  // grab list of images
+  $('.carrousel .carrousel__item').each((i, e) => {
+    const sources = $(e).find('source').attr('srcset');
+    if (!sources) return;
+    const img = srcset.parse(sources);
+    const image = img.pop().url;
+    images.push(image);
+  });
+
+  // title
+  const title = strip($('h1.listing-detail-summary__title').text());
+
+  // type
+  const type = strip($('.listing-features__description--dwelling_type').text());
+
+  // price
+  const price = Number(
+    $('.listing-detail-summary__price meta[itemprop=price]').attr('content'),
+  );
+
+  // location
+  const _location = strip($('.listing-detail-summary__location').text());
+  const location = _location.match(
+    /(?<postcode>\d{4} \w{2}) (?<municipality>[\w].+)/,
+  );
+  const {
+    groups: { postcode, municipality },
+  } = location;
+
+  // agent
+  const agent = strip(
+    $('.page__agent-summary-aside .agent-summary__title').text(),
+  );
+
+  // move-in date
+  const dateAvailableRegex = new RegExp(/\d{1,2}-\d{1,2}-\d{4}/);
+  let _dateAvailable: string | RegExpExecArray = strip(
+    $('.listing-features__description--acceptance').text(),
+  );
+  _dateAvailable = dateAvailableRegex.exec(_dateAvailable) || '?';
+  const dateAvailable = _dateAvailable ? _dateAvailable[0] : '?';
+
+  // coordinates on map
+  const latitude: number = Number(
+    $('.listing-detail-map').data('listing-detail-map-latitude'),
+  );
+  const longitude: number = $('.listing-detail-map').data(
+    'listing-detail-map-longitude',
+  );
+
+  return {
+    ...listing,
+    title,
+    images,
+    type,
+    agent,
+    dateAvailable,
+    coords: [latitude, longitude],
+    postcode,
+    municipality,
+    price,
+  };
+}
+
 async function crawl(url: string): Promise<CrawlData> {
-  const axiosInstance = axios.create({ baseURL: 'https://www.pararius.nl' });
   const page = await axiosInstance.get(url, {});
   const $ = cheerio.load(page.data);
-  const totalResults = $('.search-results-container .count')
-    .text()
-    .trim()
-    .match(/^\d+/)[0];
+  // const totalResults = $('.search-results-container .count')
+  //   .text()
+  //   .trim()
+  //   .match(/^\d+/)[0];
 
-  const nextPageUrl = $('.pagination li.next a').attr('href');
+  const totalResults = '0';
 
-  const results = $('.search-results-list li.property-list-item-container');
+  const nextPageUrl = $('.pagination li.pagination__item--next a').attr('href');
+
+  const results = $('ul.search-list li.search-list__item--listing');
   const data: PropertyData[] = [];
+  const promises: Promise<any>[] = [];
 
   results.each((idx, result) => {
-    const propertyId = $(result).data('property-id');
-    const images = [];
-    $(result)
-      .find('.single-photo-slider img')
-      .each((i, e) => {
-        const imageSrc = $(e).attr('src') || $(e).data('src');
-        images.push(imageSrc);
-      });
+    const url = $(result).find('h2 a').attr('href');
+    const { groups } = url.match(/\/(?<id>PR[0-9]+)\//);
+    const propertyId = groups.id;
 
-    const type = $(result)
-      .find('h2 a span')
-      .text();
-    const title = strip(
-      $(
-        $(result)
-          .find('h2 a')
-          .contents()[2],
-      ).text(),
-    );
-
-    const breadcrumbs = $(result).find('ul.breadcrumbs li');
-
-    const postcode = strip($(breadcrumbs.contents()[0]).text());
-    const municipality = strip($(breadcrumbs.contents()[1]).text());
-    const neighborhood = strip($(breadcrumbs.contents()[2]).text());
-
-    const agent = strip(
-      $(result)
-        .find('p.estate-agent a')
-        .text(),
-    );
-
-    const price = Number(
-      strip(
-        $(result)
-          .find('p.price')
-          .text()
-          .replace(/\D/g, ''),
-      ),
-    );
+    const images: string[] = [];
 
     const surface = Number(
-      strip(
-        $(result)
-          .find('li.surface')
-          .text()
-          .replace(/\D/g, ''),
-      ),
+      strip($(result).find('li.surface').text().replace(/\D/g, '')),
     );
 
     const info: PropertyData = {
       propertyId,
-      type,
-      title,
-      postcode,
-      municipality,
-      neighborhood,
-      agent,
-      price,
+      title: undefined,
+      type: undefined,
+      postcode: undefined,
+      municipality: undefined,
+      neighborhood: undefined,
+      agent: undefined,
+      price: undefined,
       surface,
       images,
+      url,
+      coords: [],
+      dateAvailable: undefined,
     };
 
     data.push(info);
+    promises.push(processListing(info));
   });
 
-  return { data, nextPage: nextPageUrl };
+  return Promise.all(promises).then((data) => {
+    return { data, nextPage: nextPageUrl };
+  });
 }
 
 export default run;

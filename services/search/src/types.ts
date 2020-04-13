@@ -9,4 +9,7 @@ export interface PropertyData {
   price: number;
   surface: number;
   images: string[];
+  url: string;
+  dateAvailable: string;
+  coords: number[];
 }
