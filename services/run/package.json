@@ -1,0 +1,20 @@
+{
+  "name": "run",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "webpack --watch",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "start": "node --enable-source-maps dist/index.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.8.3"
+  }
+}
