@@ -37,9 +37,10 @@ export const handleCreate = async (
 ) => {
   if (!req.body) return res.send(400);
 
+
   const action = Array.isArray(req.body)
     ? Property.bulkCreate(req.body)
-    : Property.create();
+    : Property.create(req.body);
 
   try {
     const result = await action;
