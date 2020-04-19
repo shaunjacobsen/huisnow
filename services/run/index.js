@@ -62,29 +62,53 @@ function fetchResults(url) {
         return response === null || response === void 0 ? void 0 : response.data;
     });
 }
-exports.run = (url) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!url)
-        return console.log('No search URL specified');
-    try {
-        let notUniqueCount = 0;
-        let page = url;
-        while (notUniqueCount < 3) {
-            const data = yield fetchResults(page);
-            const results = (data === null || data === void 0 ? void 0 : data.data) || [];
-            page = data.nextPage;
-            const { errors, notUnique } = yield saveResults(results);
-            if (notUnique.length > 0) {
-                notUniqueCount += notUnique.length;
-                console.log('not unique count is ', notUniqueCount);
+function run(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+            if (!url) {
+                console.log('No search URL specified');
+                return reject('No search URL specified');
             }
-            if (!data.nextPage) {
-                console.log('No further pages. Exiting...');
-                break;
+            try {
+                let notUniqueCount = 0;
+                let page = url;
+                while (notUniqueCount < 3) {
+                    const data = yield fetchResults(page);
+                    const results = (data === null || data === void 0 ? void 0 : data.data) || [];
+                    page = data.nextPage;
+                    const { errors, notUnique } = yield saveResults(results);
+                    if (notUnique.length > 0) {
+                        notUniqueCount += notUnique.length;
+                        console.log('not unique count is ', notUniqueCount);
+                    }
+                    if (!data.nextPage) {
+                        console.log('No further pages. Exiting...');
+                        resolve('No further pages');
+                        break;
+                    }
+                }
+                resolve('Encountered 3 or more non-unique results. Exiting...');
             }
-        }
-    }
-    catch (e) {
-        console.log(e);
-    }
-});
+            catch (e) {
+                console.log(e);
+            }
+        }));
+    });
+}
+// for AWS Lambda
+exports.handler = function (event, context) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // uses a cloudwatch event with a simple json payload
+        console.log('event', event);
+        const { url } = event;
+        yield run(url);
+    });
+};
+// for development
+const searchURL = process.env.SEARCH_URL;
+if (process.env.NODE_ENV === 'development' && !!searchURL) {
+    (() => __awaiter(void 0, void 0, void 0, function* () {
+        yield run(searchURL);
+    }))();
+}
 //# sourceMappingURL=index.js.map

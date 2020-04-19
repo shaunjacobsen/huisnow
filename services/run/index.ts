@@ -103,8 +103,9 @@ async function run(url: string): Promise<any> {
 
 // for AWS Lambda
 exports.handler = async function (event: any, context: any) {
-  const url = event.Records[0].Sns.Message;
-  console.log('SNS message: ', url);
+  // uses a cloudwatch event with a simple json payload
+  console.log('event', event);
+  const { url } = event;
   await run(url);
 };
 
