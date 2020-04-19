@@ -3,7 +3,7 @@ services:
   api:
     build:
       context: ./api
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     env_file: .env
@@ -11,6 +11,19 @@ services:
       - "4000:4000"
     volumes:
       - ./api:/app
+      - /app/node_modules
+  
+  search:
+    build:
+      context: ./services/search
+      dockerfile: Dockerfile
+    command: yarn start
+    depends_on:
+      - api
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./services/search:/app
       - /app/node_modules
   
   postgres:

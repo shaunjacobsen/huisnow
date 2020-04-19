@@ -1,11 +1,11 @@
-import express from 'express';
+import * as express from 'express';
 
 import { crawl } from './pararius';
 
 const router = express.Router();
 
-router.get('/run', async (req: express.Request, res: express.Request) => {
-  const searchUrl = req.query.search_url;
+router.get('/run', async (req: express.Request, res: express.Response) => {
+  const searchUrl: string = req.query.search_url as string;
   if (!searchUrl)
     return res.status(400).json({ error: 'Must specify search URL' });
     
