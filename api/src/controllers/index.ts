@@ -32,7 +32,12 @@ export const handleGetById = async (
 };
 
 function getErrors(e: any): string[] {
-  const errors: string[] = e.errors.map((error: any) => error.validatorKey);
+  let errors: string[] = [];
+  if (Array.isArray(e.errors)) {
+    errors = e.errors.map((error: any) => error.validatorKey);
+  } else {
+    console.log('ERROR', e);
+  }
   return errors;
 }
 
