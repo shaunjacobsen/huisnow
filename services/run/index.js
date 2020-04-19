@@ -1,7 +1,4 @@
 "use strict";
-// on invoke...
-// call scraper api
-// save each result
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
-const apiUrl = 'http://localhost:4000/properties';
-const scraperUrl = 'http://localhost:4001';
+const apiUrl = process.env.API_URL || 'http://localhost:4000/properties';
+const scraperUrl = process.env.SCRAPER_URL || 'http://localhost:4001';
 function requestCreate(property) {
     const data = {
         source: 'pararius',
@@ -28,31 +25,66 @@ function requestCreate(property) {
         images: property.images,
         availableFrom: property.availableFrom,
     };
+    console.log('Attempting to create entry\nSource: ', data.source, 'Identifier: ', data.sourceIdentifier);
     return axios_1.default.post(`${apiUrl}/`, data);
 }
 function saveResults(results) {
-    if (results && results.data && results.data.data) {
-        if (!Array.isArray(results.data.data))
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!Array.isArray(results) || results.length < 1)
             return;
+        const errors = [];
+        const notUnique = [];
         // now do a request to save each result
-        results.data.data.reduce((p, result) => {
+        const process = results.reduce((p, result) => {
             return p
-                .then((_) => requestCreate(result))
-                .catch((e) => console.log('err', e));
+                .then(_ => requestCreate(result))
+                .catch(e => {
+                var _a, _b;
+                if (((_b = (_a = e.response) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.error) === 'not_unique')
+                    notUnique.push(result);
+                console.log('Error saving entry', result);
+                errors.push(e);
+            });
         }, Promise.resolve());
-    }
+        return process.then(() => {
+            console.log('Processing complete!');
+            return { errors, notUnique };
+        });
+    });
 }
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const results = yield axios_1.default.get(`${scraperUrl}/run`, {
+function fetchResults(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield axios_1.default.get(`${scraperUrl}/run`, {
             params: {
-                search_url: 'https://www.pararius.nl/huurwoningen/amsterdam/0-1600/50m2/2-slaapkamers',
+                search_url: url,
             },
         });
-        saveResults(results);
+        return response === null || response === void 0 ? void 0 : response.data;
+    });
+}
+exports.run = (url) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!url)
+        return console.log('No search URL specified');
+    try {
+        let notUniqueCount = 0;
+        let page = url;
+        while (notUniqueCount < 3) {
+            const data = yield fetchResults(page);
+            const results = (data === null || data === void 0 ? void 0 : data.data) || [];
+            page = data.nextPage;
+            const { errors, notUnique } = yield saveResults(results);
+            if (notUnique.length > 0) {
+                notUniqueCount += notUnique.length;
+                console.log('not unique count is ', notUniqueCount);
+            }
+            if (!data.nextPage) {
+                console.log('No further pages. Exiting...');
+                break;
+            }
+        }
     }
     catch (e) {
         console.log(e);
     }
-}))();
+});
 //# sourceMappingURL=index.js.map

@@ -31,12 +31,16 @@ export const handleGetById = async (
   }
 };
 
+function getErrors(e: any): string[] {
+  const errors: string[] = e.errors.map((error: any) => error.validatorKey);
+  return errors;
+}
+
 export const handleCreate = async (
   req: express.Request,
   res: express.Response,
 ) => {
   if (!req.body) return res.send(400);
-
 
   const action = Array.isArray(req.body)
     ? Property.bulkCreate(req.body)
@@ -46,6 +50,10 @@ export const handleCreate = async (
     const result = await action;
     res.json(result);
   } catch (e) {
+    const errors = getErrors(e);
+    if (errors.find((error) => error === 'not_unique')) {
+      return res.status(400).json({ error: 'not_unique' });
+    }
     res.status(400).json(e);
   }
 };
@@ -79,8 +87,8 @@ export const handleDelete = async (
     const record = await Property.findByPk(id);
     if (!record) return res.send(404);
 
-    const deleted = await record.destroy();
-    if (deleted) return res.send(200);
+    await record.destroy();
+    return res.send(200);
   } catch (e) {
     res.status(400).json(e);
   }

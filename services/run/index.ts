@@ -1,11 +1,7 @@
-// on invoke...
-// call scraper api
-// save each result
-
 import axios from 'axios';
 
-const apiUrl = 'http://localhost:4000/properties';
-const scraperUrl = 'http://localhost:4001';
+const apiUrl = process.env.API_URL || 'http://localhost:4000/properties';
+const scraperUrl = process.env.SCRAPER_URL || 'http://localhost:4001';
 
 function requestCreate(property: any) {
   const data = {
@@ -21,37 +17,78 @@ function requestCreate(property: any) {
     availableFrom: property.availableFrom,
   };
 
+  console.log(
+    'Attempting to create entry\nSource: ',
+    data.source,
+    'Identifier: ',
+    data.sourceIdentifier,
+  );
   return axios.post(`${apiUrl}/`, data);
 }
 
-function saveResults(results: any) {
-  if (results && results.data && results.data.data) {
-    if (!Array.isArray(results.data.data)) return;
-
-    // now do a request to save each result
-    results.data.data.reduce((p: Promise<any>, result: any) => {
-      return p
-        .then((_) => requestCreate(result))
-        .catch((e) => console.log('err', e));
-    }, Promise.resolve());
-  }
+interface SaveResultsResponse {
+  errors: Error[];
+  notUnique: any[];
 }
 
-(async () => {
+async function saveResults(results: any[]): Promise<SaveResultsResponse> {
+  if (!Array.isArray(results) || results.length < 1) return;
+
+  const errors: Error[] = [];
+  const notUnique: any[] = [];
+
+  // now do a request to save each result
+  const process = results.reduce((p: Promise<any>, result: any) => {
+    return p
+      .then(_ => requestCreate(result))
+      .catch(e => {
+        if (e.response?.data?.error === 'not_unique') notUnique.push(result);
+        console.log('Error saving entry', result);
+        errors.push(e);
+      });
+  }, Promise.resolve());
+
+  return process.then(() => {
+    console.log('Processing complete!');
+    return { errors, notUnique };
+  });
+}
+
+async function fetchResults(url: string) {
+  const response = await axios.get(`${scraperUrl}/run`, {
+    params: {
+      search_url: url,
+    },
+  });
+
+  return response?.data;
+}
+
+exports.run = async (url: string) => {
+  if (!url) return console.log('No search URL specified');
+  
   try {
-    const results = await axios.get(`${scraperUrl}/run`, {
-      params: {
-        search_url:
-          'https://www.pararius.nl/huurwoningen/amsterdam/0-1600/50m2/2-slaapkamers',
-      },
-    });
+    let notUniqueCount = 0;
+    let page = url;
 
-    saveResults(results);
+    while (notUniqueCount < 3) {
+      const data = await fetchResults(page);
+      const results = data?.data || [];
+      page = data.nextPage;
 
-    // NEXT: needs to go to the next page and loop until it's done
+      const { errors, notUnique } = await saveResults(results);
 
+      if (notUnique.length > 0) {
+        notUniqueCount += notUnique.length;
+        console.log('not unique count is ', notUniqueCount);
+      }
 
+      if (!data.nextPage) {
+        console.log('No further pages. Exiting...');
+        break;
+      }
+    }
   } catch (e) {
     console.log(e);
   }
-})();
+};
