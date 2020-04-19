@@ -93,7 +93,7 @@ async function processListing(listing: PropertyData): Promise<PropertyData> {
     type,
     agent,
     dateAvailable,
-    coords: [latitude, longitude],
+    coords: [longitude, latitude],
     postcode,
     municipality,
     price,
@@ -147,7 +147,7 @@ export async function crawl(url: string): Promise<CrawlData> {
     promises.push(processListing(info));
   });
 
-  return Promise.all(promises).then((data) => {
+  return Promise.all(promises).then(data => {
     return { data, nextPage: nextPageUrl };
   });
 }

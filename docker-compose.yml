@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 services:
   api:
     build:
@@ -13,7 +13,7 @@ services:
     volumes:
       - ./api:/app
       - /app/node_modules
-  
+
   search:
     build:
       context: ./services/search
@@ -26,10 +26,14 @@ services:
     volumes:
       - ./services/search:/app
       - /app/node_modules
-  
+
   postgres:
-    image: postgres:10.4
+    image: mdillon/postgis
     ports:
       - "35432:5432"
     env_file: .env
-    
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

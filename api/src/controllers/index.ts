@@ -41,15 +41,26 @@ function getErrors(e: any): string[] {
   return errors;
 }
 
+function convertCoordsToGeoJson(coords: number[]) {
+  if (!coords || !Array.isArray(coords)) return null;
+  return { type: 'Point', coordinates: coords }; // coords: [longitude, latitude]
+}
+
 export const handleCreate = async (
   req: express.Request,
   res: express.Response,
 ) => {
   if (!req.body) return res.send(400);
 
-  const action = Array.isArray(req.body)
-    ? Property.bulkCreate(req.body)
-    : Property.create(req.body);
+  const data = Array.isArray(req.body)
+    ? req.body.map((datum) => {
+        return { ...datum, coords: convertCoordsToGeoJson(datum.coords) };
+      })
+    : { ...req.body, coords: convertCoordsToGeoJson(req.body.coords) };
+
+  const action = Array.isArray(data)
+    ? Property.bulkCreate(data)
+    : Property.create(data);
 
   try {
     const result = await action;

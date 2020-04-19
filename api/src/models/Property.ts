@@ -17,6 +17,7 @@ class Property extends Model {
   public surface?: number;
   public images?: string[];
   public availableFrom?: Date;
+  public coords?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -38,6 +39,7 @@ Property.init(
     surface: DataTypes.INTEGER,
     images: DataTypes.ARRAY(DataTypes.STRING),
     availableFrom: DataTypes.DATE,
+    coords: DataTypes.GEOMETRY('POINT'),
   },
   {
     sequelize,
