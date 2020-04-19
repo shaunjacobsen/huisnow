@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@types/bluebird@*":
+"@types/bluebird@*", "@types/bluebird@^3.5.30":
   version "3.5.30"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.30.tgz#ee034a0eeea8b84ed868b1aa60d690b08a6cfbc5"
   integrity sha512-8LhzvcjIoqoi1TghEkRMkbbmM+jhHnBokPGkJWjclMK+Ks0MxEBow3/p2/iFTZ+OIbJHQDSfpgdZEb+af3gfVw==
@@ -103,7 +103,7 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@types/validator@*":
+"@types/validator@*", "@types/validator@^13.0.0":
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.0.0.tgz#365f1bf936aeaddd0856fc41aa1d6f82d88ee5b3"
   integrity sha512-WAy5txG7aFX8Vw3sloEKp5p/t/Xt8jD3GRD9DacnFv6Vo8ubudAsRTXgxpQwU0mpzY/H8U4db3roDuCMjShBmw==

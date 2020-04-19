@@ -64,31 +64,54 @@ async function fetchResults(url: string) {
   return response?.data;
 }
 
-exports.run = async (url: string) => {
-  if (!url) return console.log('No search URL specified');
-  
-  try {
-    let notUniqueCount = 0;
-    let page = url;
-
-    while (notUniqueCount < 3) {
-      const data = await fetchResults(page);
-      const results = data?.data || [];
-      page = data.nextPage;
-
-      const { errors, notUnique } = await saveResults(results);
-
-      if (notUnique.length > 0) {
-        notUniqueCount += notUnique.length;
-        console.log('not unique count is ', notUniqueCount);
-      }
-
-      if (!data.nextPage) {
-        console.log('No further pages. Exiting...');
-        break;
-      }
+async function run(url: string): Promise<any> {
+  return new Promise(async (resolve, reject) => {
+    if (!url) {
+      console.log('No search URL specified');
+      return reject('No search URL specified');
     }
-  } catch (e) {
-    console.log(e);
-  }
+
+    try {
+      let notUniqueCount = 0;
+      let page = url;
+
+      while (notUniqueCount < 3) {
+        const data = await fetchResults(page);
+        const results = data?.data || [];
+        page = data.nextPage;
+
+        const { errors, notUnique } = await saveResults(results);
+
+        if (notUnique.length > 0) {
+          notUniqueCount += notUnique.length;
+          console.log('not unique count is ', notUniqueCount);
+        }
+
+        if (!data.nextPage) {
+          console.log('No further pages. Exiting...');
+          resolve('No further pages');
+          break;
+        }
+      }
+
+      resolve('Encountered 3 or more non-unique results. Exiting...');
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
+
+// for AWS Lambda
+exports.handler = async function (event: any, context: any) {
+  const url = event.Records[0].Sns.Message;
+  console.log('SNS message: ', url);
+  await run(url);
 };
+
+// for development
+const searchURL = process.env.SEARCH_URL;
+if (process.env.NODE_ENV === 'development' && !!searchURL) {
+  (async () => {
+    await run(searchURL);
+  })();
+}
