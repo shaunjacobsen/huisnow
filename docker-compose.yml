@@ -4,6 +4,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
+    command: yarn start
     depends_on:
       - postgres
     env_file: .env

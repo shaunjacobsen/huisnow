@@ -7,7 +7,7 @@
     "build": "webpack",
     "watch": "webpack --watch",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "start": "node dist/index.js"
+    "start": "yarn build && node dist/index.js"
   },
   "dependencies": {
     "axios": "^0.19.2",

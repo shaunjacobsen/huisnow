@@ -6,4 +6,3 @@ COPY ./yarn.lock /app
 RUN yarn
 COPY . /app
 EXPOSE 4001
-RUN yarn build

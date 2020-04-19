@@ -6,7 +6,7 @@
   "license": "none",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
-    "start": "node dist/app.js",
+    "start": "yarn build && node dist/app.js",
     "build": "tsc -p ."
   },
   "dependencies": {
