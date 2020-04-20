@@ -35,5 +35,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  redis:
+    image: bitnami/redis
+    ports:
+      - "6370:6379"
+    env_file: .env
+    environment:
+      - DISABLE_COMMANDS=
+    volumes:
+      - redisdata:/bitnami/redis/data
+
 volumes:
   pgdata:
+  redisdata:
