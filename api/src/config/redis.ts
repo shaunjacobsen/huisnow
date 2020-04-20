@@ -1,4 +1,4 @@
-import redis from 'redis';
+import * as redis from 'redis';
 
 const client = redis.createClient({
   password: process.env.REDIS_PASSWORD,

@@ -4,3 +4,4 @@ yarn-error*
 *.env
 /**/*.env
 services/run/*.js
+.DS_Store
