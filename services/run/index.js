@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
+require('dotenv').config();
 const apiUrl = process.env.API_URL || 'http://localhost:4000/properties';
 const scraperUrl = process.env.SCRAPER_URL || 'http://localhost:4001';
 function requestCreate(property) {
@@ -40,14 +41,16 @@ function saveResults(results) {
                 .then(_ => requestCreate(result))
                 .catch(e => {
                 var _a, _b;
-                if (((_b = (_a = e.response) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.error) === 'not_unique')
-                    notUnique.push(result);
+                if (((_b = (_a = e.response) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.error) === 'not_unique') {
+                    console.log('Entry not unique', result.propertyId, result.url);
+                    return notUnique.push(result);
+                }
                 console.log('Error saving entry', result);
                 errors.push(e);
             });
         }, Promise.resolve());
         return process.then(() => {
-            console.log('Processing complete!');
+            console.log('Page complete!');
             return { errors, notUnique };
         });
     });
@@ -79,7 +82,7 @@ function run(url) {
                     const { errors, notUnique } = yield saveResults(results);
                     if (notUnique.length > 0) {
                         notUniqueCount += notUnique.length;
-                        console.log('not unique count is ', notUniqueCount);
+                        console.log('Not unique count is ', notUniqueCount);
                     }
                     if (!data.nextPage) {
                         console.log('No further pages. Exiting...');
@@ -106,6 +109,7 @@ exports.handler = function (event, context) {
 };
 // for development
 const searchURL = process.env.SEARCH_URL;
+console.log('env', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development' && !!searchURL) {
     (() => __awaiter(void 0, void 0, void 0, function* () {
         yield run(searchURL);

@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+import redisClient from './redis';
+
+require('dotenv').config();
+
 const apiUrl = process.env.API_URL || 'http://localhost:4000/properties';
 const scraperUrl = process.env.SCRAPER_URL || 'http://localhost:4001';
+
+const SOURCE = 'pararius';
+
+function savePropertyToRedis(result: any) {
+  redisClient.set(
+    `property:${SOURCE}:${result.propertyId}`,
+    'true',
+    (err, reply) => {
+      if (err) console.log('error saving to redis', err);
+    },
+  );
+}
 
 function requestCreate(property: any) {
   const data = {
@@ -23,7 +39,15 @@ function requestCreate(property: any) {
     'Identifier: ',
     data.sourceIdentifier,
   );
-  return axios.post(`${apiUrl}/`, data);
+  return new Promise((resolve, reject) =>
+    axios
+      .post(`${apiUrl}/`, data)
+      .then(() => {
+        savePropertyToRedis(property);
+      })
+      .catch(reject)
+      .finally(resolve),
+  );
 }
 
 interface SaveResultsResponse {
@@ -40,16 +64,36 @@ async function saveResults(results: any[]): Promise<SaveResultsResponse> {
   // now do a request to save each result
   const process = results.reduce((p: Promise<any>, result: any) => {
     return p
-      .then(_ => requestCreate(result))
+      .then(_ => {
+        return new Promise((resolve, reject) => {
+          redisClient.get(
+            `property:${SOURCE}:${result.propertyId}`,
+            (err, reply) => {
+              if (err) reject('redis error');
+              if (!!reply) {
+                return resolve();
+              } else {
+                requestCreate(result).then(resolve).catch(reject);
+              }
+            },
+          );
+        });
+      })
       .catch(e => {
-        if (e.response?.data?.error === 'not_unique') notUnique.push(result);
+        if (e.response?.data?.error === 'not_unique') {
+          console.log('Entry not unique', result.propertyId, result.url);
+          // if the result is already in the db, save it in redis
+          // so we don't try to save it next time
+          savePropertyToRedis(result);
+          return notUnique.push(result);
+        }
         console.log('Error saving entry', result);
         errors.push(e);
       });
   }, Promise.resolve());
 
   return process.then(() => {
-    console.log('Processing complete!');
+    console.log('Page complete!');
     return { errors, notUnique };
   });
 }
@@ -84,7 +128,7 @@ async function run(url: string): Promise<any> {
 
         if (notUnique.length > 0) {
           notUniqueCount += notUnique.length;
-          console.log('not unique count is ', notUniqueCount);
+          console.log('Not unique count is ', notUniqueCount);
         }
 
         if (!data.nextPage) {
