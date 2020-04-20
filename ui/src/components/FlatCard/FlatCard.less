@@ -1,0 +1,33 @@
+@import './../../styles/variables';
+
+.date-meta {
+  padding: 8px 0 0 0;
+  font-size: 14px;
+}
+.base-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  width: 100%;
+  div {
+    padding: 0 @padding-sm;
+    text-align: center;
+    width: 33%;
+  }
+  div + div {
+    border-left: thin solid @lite-grey;
+  }
+  div:not(:last-of-type) {
+  }
+}
+.card-image {
+  img {
+    max-height: 200px;
+    width: 100%;
+  }
+}
+.commute-info {
+  // display: none;
+}
+.description {
+}

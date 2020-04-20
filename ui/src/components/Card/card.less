@@ -1,0 +1,32 @@
+@import './../../styles/variables.less';
+
+.card-container {
+  background-color: @white;
+  border: 1px solid @lite-grey;
+  box-sizing: border-box;
+  margin-bottom: @padding;
+  max-width: 400px;
+  width: 100%;
+  .title {
+    font-weight: bold;
+    padding: @padding;
+    border-bottom: 1px solid @lite-grey;
+  }
+  .cover {
+    background-color: @midnight;
+    width: 100%;
+  }
+  .children {
+    padding: @padding;
+  }
+  .actions {
+    border-top: 1px solid @lite-grey;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: @padding;
+    span {
+      font-size: 24px;
+    }
+  }
+}

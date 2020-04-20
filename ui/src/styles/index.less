@@ -1,0 +1,107 @@
+@import (css)
+  url('https://fonts.googleapis.com/css?family=Cabin:400,500,500i,700&display=swap');
+@import '~antd/dist/antd.less';
+@import './variables.less';
+@import './ant_override.less';
+
+html {
+  letter-spacing: 0.5px;
+}
+
+body {
+  background-color: #f7f9fc;
+  margin: 0;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: [sidebar] 300px [center] auto [userinfo] 100px;
+  grid-template-rows: [header] 90px [main] auto [footer] 50px;
+  height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.header {
+  grid-column: sidebar / span 3;
+  text-align: left;
+}
+
+.sidebar {
+  grid-column: sidebar;
+  grid-row: main;
+  text-align: left;
+}
+
+.content {
+  grid-column: center / span 2;
+  grid-row: main;
+}
+
+.footer {
+  grid-column: sidebar / span 3;
+  grid-row: footer;
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0;
+}
+
+h1 span {
+  color: @primary-color;
+}
+
+.overview-header {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  font-size: 24px;
+  margin-bottom: 16px;
+  &:not(:first-of-type) {
+    border-top: thin solid @lite-grey;
+    padding: 16px 0;
+  }
+}
+
+.flats-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  .flat {
+    // border-top: thin solid @lite-grey;
+    display: flex;
+    flex-direction: row;
+    padding: 8px 0;
+    width: 100%;
+    .info {
+      flex-grow: 1;
+      padding: 0 16px 0 0;
+      > div {
+        display: flex;
+        align-items: baseline;
+        .price {
+          font-size: 24px;
+          margin-right: 16px;
+          width: 100px;
+        }
+        .name {
+          font-size: 18px;
+        }
+      }
+
+      .actions {
+        font-size: 24px;
+        padding: 16px 0;
+        span:not(:first-of-type) {
+          border-left: thin solid @lite-grey;
+          margin-left: 16px;
+          padding-left: 16px;
+        }
+      }
+    }
+  }
+}
