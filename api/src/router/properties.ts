@@ -5,7 +5,7 @@ import {
   handleCreate,
   handleUpdateById,
   handleDelete,
-} from '../controllers';
+} from '../controllers/properties';
 
 const router = express.Router();
 

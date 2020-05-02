@@ -5,6 +5,9 @@ import helmet from 'helmet';
 require('dotenv').config();
 
 import propertiesRouter from './router/properties';
+import userInterestRouter from './router/user_interest';
+import userRouter from './router/user';
+
 import Property from './models/Property';
 import UserInterest from './models/UserInterest';
 
@@ -21,6 +24,8 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
 app.use('/properties', propertiesRouter);
+app.use('/interest', userInterestRouter);
+app.use('/user', userRouter);
 
 const port = process.env.PORT || 4000;
 
