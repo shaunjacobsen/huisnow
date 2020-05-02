@@ -2,12 +2,16 @@ import express from 'express';
 
 import { authenticate } from '../middleware/authenticate';
 
-import { handleTogglePropertySave } from './../controllers/user_interest';
+import {
+  handleTogglePropertySave,
+  handleUpdatePropertyInterest,
+} from './../controllers/user_interest';
 
 const router = express.Router();
 
-router.use(authenticate);
+router.use(authenticate({ required: true }));
 
-router.put('/save/:propertyId', handleTogglePropertySave);
+router.put('/:propertyId', handleUpdatePropertyInterest);
+router.post('/:propertyId/save', handleTogglePropertySave);
 
 export default router;

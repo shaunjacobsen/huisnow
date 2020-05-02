@@ -15,11 +15,13 @@ const authenticate = (opts = { required: true }) => {
     }
 
     if (!token) {
-      res.status(401).json({ status: 'ERROR', message: 'AUTH_REQUIRED' });
+      return res
+        .status(401)
+        .json({ status: 'ERROR', message: 'AUTH_REQUIRED' });
     }
 
     validateToken(token)
-      .then((decodedToken: any) => {
+      .then(decodedToken => {
         User.findOne({ where: { firebaseId: decodedToken.uid } })
           .then((user: User | null) => {
             req.user = user;

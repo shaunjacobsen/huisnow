@@ -2,7 +2,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 import sequelize from './../config/db';
 import Property from './Property';
 
-enum UserInterestStatus {
+export enum UserInterestStatus {
   pendingAction,
   contacted,
   awaitingReply,
@@ -16,6 +16,7 @@ class UserInterest extends Model {
   public userId!: number;
   public isInterested!: boolean;
   public hasContacted!: boolean;
+  public contactedDate?: Date;
   public status!: UserInterestStatus;
   public viewingTime?: Date;
   public viewingNotes?: string;
@@ -31,11 +32,18 @@ UserInterest.init(
     userId: DataTypes.INTEGER,
     isInterested: DataTypes.BOOLEAN,
     hasContacted: DataTypes.BOOLEAN,
+    contactedDate: DataTypes.DATE,
     status: DataTypes.STRING,
-    viewingTime: DataTypes.TIME,
+    viewingTime: DataTypes.DATE,
     viewingNotes: DataTypes.TEXT,
   },
-  { sequelize, tableName: 'user_interests', underscored: true, paranoid: true },
+  {
+    sequelize,
+    tableName: 'user_interests',
+    underscored: true,
+    paranoid: true,
+    indexes: [{ unique: true, fields: ['user_id', 'property_id'] }],
+  },
 );
 
 UserInterest.hasOne(Property, {
