@@ -71,6 +71,7 @@ async function saveResults(results: any[]): Promise<SaveResultsResponse> {
             (err, reply) => {
               if (err) reject('redis error');
               if (!!reply) {
+                notUnique.push(result);
                 return resolve();
               } else {
                 requestCreate(result).then(resolve).catch(reject);
@@ -131,7 +132,7 @@ async function run(url: string): Promise<any> {
           console.log('Not unique count is ', notUniqueCount);
         }
 
-        if (!data.nextPage) {
+        if (!data.nextPage || notUniqueCount >= 3) {
           console.log('No further pages. Exiting...');
           resolve('No further pages');
           break;
