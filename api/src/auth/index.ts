@@ -24,21 +24,25 @@ firebase.initializeApp({
   appId: process.env.FIREBASE_APP_ID,
 });
 
-const validateToken = (token: string | undefined) => {
-  return new Promise<any>(async (resolve, reject) => {
-    if (!token) reject();
-    try {
-      firebaseAdmin
-        .auth()
-        .verifyIdToken(token!)
-        .then(decodedToken => {
-          resolve(decodedToken);
-        })
-        .catch(e => reject(e));
-    } catch (e) {
-      reject(e);
-    }
-  });
+const validateToken = (
+  token: string | undefined,
+): Promise<firebaseAdmin.auth.DecodedIdToken> => {
+  return new Promise<firebaseAdmin.auth.DecodedIdToken>(
+    async (resolve, reject) => {
+      if (!token) reject();
+      try {
+        firebaseAdmin
+          .auth()
+          .verifyIdToken(token!)
+          .then(decodedToken => {
+            resolve(decodedToken);
+          })
+          .catch(e => reject(e));
+      } catch (e) {
+        reject(e);
+      }
+    },
+  );
 };
 
 const signIn = async (email: string, password: string) => {
