@@ -1,33 +1,67 @@
 @import './../../styles/variables';
 
-.date-meta {
-  padding: 8px 0 0 0;
-  font-size: 14px;
-}
-.base-info {
+.flat-card {
+  background-color: @white;
+  border: 1px solid @lite-grey;
+  box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
-  padding: 16px 0;
+  margin-bottom: @padding;
+  padding: @padding;
   width: 100%;
-  div {
-    padding: 0 @padding-sm;
-    text-align: center;
-    width: 33%;
+  .body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+    .title {
+      font-size: 18px;
+    }
   }
-  div + div {
-    border-left: thin solid @lite-grey;
+  .images {
+    flex-basis: 30%;
+    // width: 100%;
   }
-  div:not(:last-of-type) {
+  .date-meta {
+    padding: 8px 0 0 0;
+    font-size: 14px;
   }
-}
-.card-image {
-  img {
-    max-height: 200px;
-    width: 100%;
+  .base-info {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+    width: 300px;
+    > div {
+      padding: 0 @padding-sm;
+      text-align: center;
+    }
+    > div:first-of-type {
+      padding: 0;
+    }
+    div + div {
+      border-left: thin solid @lite-grey;
+    }
   }
-}
-.commute-info {
-  // display: none;
-}
-.description {
+  .card-image {
+    img {
+      max-height: 200px;
+      width: 100%;
+    }
+  }
+  .description {
+  }
+  .actions {
+    align-self: bottom;
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    width: 75px;
+    span {
+      padding-right: @padding;
+    }
+    span + span {
+      border-left: thin solid @lite-grey;
+      padding: 0 0 0 @padding;
+    }
+  }
 }

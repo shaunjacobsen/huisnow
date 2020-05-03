@@ -1,23 +1,19 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { Dispatch } from 'redux';
-// import { pick } from 'lodash';
 
 import firebase from './../../firebase';
-
-// import { request } from './../../utils/http/request';
+import propertyRequester from '../../utils/axios';
 
 const cookies = new Cookies();
 
-export const signIn = (payload: { username: string; password: string }) => {
+export const signIn = (payload: { email: string; password: string }) => {
   return async (dispatch: Dispatch) => {
     dispatch({ type: 'AUTH:SIGN_IN/START' });
     try {
-      const response = await axios.post(
-        `${process.env.API_URL}/user/signin`,
-        payload,
-      );
-      const token = response.headers['x-auth'];
+      const requester = await propertyRequester();
+      const response = await requester.post('/user/sign_in', payload);
+      const token = response.headers['X-auth'];
 
       firebase.auth
         .signInWithEmailAndPassword(response.data.user.email, payload.password)
@@ -25,7 +21,7 @@ export const signIn = (payload: { username: string; password: string }) => {
           cookies.set('_token', token);
           dispatch({ type: 'AUTH:SIGN_IN/SUCCESS', payload: response.data });
         })
-        .catch((e: any) => {
+        .catch(e => {
           throw new Error(e.code);
         });
     } catch (e) {

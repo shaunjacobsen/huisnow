@@ -1,5 +1,5 @@
 import FirebaseContext from './context';
-import Firebase from './../../config/firebase';
+import Firebase from './config';
 
 const firebase = new Firebase();
 

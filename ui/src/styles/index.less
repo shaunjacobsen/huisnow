@@ -13,6 +13,11 @@ body {
   margin: 0;
 }
 
+.content-container {
+  grid-column: sidebar / span 3;
+  width: 100%;
+}
+
 .container {
   display: grid;
   grid-template-columns: [sidebar] 300px [center] auto [userinfo] 100px;
@@ -25,8 +30,13 @@ body {
 }
 
 .header {
+  align-items: center;
   grid-column: sidebar / span 3;
   text-align: left;
+  display: flex;
+  justify-content: space-between;
+  .user {
+  }
 }
 
 .sidebar {

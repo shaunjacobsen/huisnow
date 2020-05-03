@@ -7,9 +7,10 @@ export const handleGetAll = async (
   res: express.Response,
 ) => {
   const { page, size } = req.query;
-  const pagination = { page: page || 0, size: size || 10 };
+  const pagination = { page: Number(page) || 0, size: Number(size) || 10 };
   const all = await Property.findAndCountAll({
     ...paginate(pagination),
+    order: [['created_at', 'DESC']],
   });
   res.json(formatPaginated(all, pagination));
 };
@@ -53,7 +54,7 @@ export const handleCreate = async (
   if (!req.body) return res.send(400);
 
   const data = Array.isArray(req.body)
-    ? req.body.map((datum) => {
+    ? req.body.map(datum => {
         return { ...datum, coords: convertCoordsToGeoJson(datum.coords) };
       })
     : { ...req.body, coords: convertCoordsToGeoJson(req.body.coords) };
@@ -67,7 +68,7 @@ export const handleCreate = async (
     res.json(result);
   } catch (e) {
     const errors = getErrors(e);
-    if (errors.find((error) => error === 'not_unique')) {
+    if (errors.find(error => error === 'not_unique')) {
       return res.status(400).json({ error: 'not_unique' });
     }
     res.status(400).json(e);
