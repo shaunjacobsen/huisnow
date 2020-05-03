@@ -40,21 +40,13 @@ export default (state = initialState, action) => {
         loading: false,
         error: undefined,
         user: {
-          ...pick(action.payload.user, [
-            'uid',
-            'username',
-            'avatar',
-            'email',
-          ]),
+          ...pick(action.payload.user, ['uid', 'username', 'avatar', 'email']),
         },
       };
     case 'AUTH:SET_TOKEN':
       return {
         ...state,
-        user: {
-          ...state.user,
-          token: action.payload.token,
-        },
+        user: Object.assign(state.user, { token: action.payload.token }),
       };
     default:
       return state;

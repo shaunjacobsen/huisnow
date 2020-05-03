@@ -1,15 +1,16 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { Dispatch } from 'redux';
 // import { pick } from 'lodash';
 
-import firebase from './../../utils/firebase';
+import firebase from './../../firebase';
 
 // import { request } from './../../utils/http/request';
 
 const cookies = new Cookies();
 
 export const signIn = (payload: { username: string; password: string }) => {
-  return async dispatch => {
+  return async (dispatch: Dispatch) => {
     dispatch({ type: 'AUTH:SIGN_IN/START' });
     try {
       const response = await axios.post(
@@ -24,7 +25,7 @@ export const signIn = (payload: { username: string; password: string }) => {
           cookies.set('_token', token);
           dispatch({ type: 'AUTH:SIGN_IN/SUCCESS', payload: response.data });
         })
-        .catch(e => {
+        .catch((e: any) => {
           throw new Error(e.code);
         });
     } catch (e) {
@@ -34,7 +35,7 @@ export const signIn = (payload: { username: string; password: string }) => {
 };
 
 export const getUser = () => {
-  return async dispatch => {
+  return async (dispatch: Dispatch) => {
     dispatch({ type: 'AUTH:GET_USER/START' });
 
     let token = cookies.get('_token');
@@ -63,12 +64,12 @@ export const getUser = () => {
   };
 };
 
-export const setAuth = payload => ({ type: 'AUTH:SET_USER', payload });
+export const setAuth = (payload: any) => ({ type: 'AUTH:SET_USER', payload });
 
 export const unsetAuth = () => ({ type: 'AUTH:UNSET_USER' });
 
 export const setToken = (payload: { token: string }) => {
-  return dispatch => {
+  return (dispatch: Dispatch) => {
     cookies.set('_token', payload.token);
     dispatch({
       type: 'AUTH:SET_TOKEN',
