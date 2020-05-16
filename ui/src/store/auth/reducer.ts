@@ -10,33 +10,33 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case 'AUTH:SIGN_IN/START':
       return {
-        ...initialState,
+        ...state,
         loading: true,
         error: undefined,
       };
     case 'AUTH:SIGN_IN/SUCCESS':
       return {
-        ...initialState,
+        ...state,
         loading: false,
         error: undefined,
         user: action.payload,
       };
     case 'AUTH:GET_USER/START':
       return {
-        ...initialState,
+        ...state,
         loading: true,
         error: undefined,
       };
     case 'AUTH:GET_USER/SUCCESS':
       return {
-        ...initialState,
+        ...state,
         loading: false,
         error: undefined,
         user: action.payload.user,
       };
     case 'AUTH:SET_USER':
       return {
-        ...initialState,
+        ...state,
         loading: false,
         error: undefined,
         user: {

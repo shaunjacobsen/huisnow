@@ -38,7 +38,8 @@ export const updatePropertyInterest = (payload: {
       const response = await requester.put(`/interest/${payload.propertyId}`, {
         isInterested: payload.interested,
       });
-      if (response) dispatch({ type: 'PROPERTY:UPDATE/SUCCESS' });
+      if (response)
+        dispatch({ type: 'PROPERTY:UPDATE/SUCCESS', payload: response.data });
     } catch (e) {
       dispatch({ type: 'PROPERTY:UPDATE/ERROR' });
     }

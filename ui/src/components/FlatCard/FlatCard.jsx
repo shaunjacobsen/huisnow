@@ -57,6 +57,7 @@ const FlatCard = props => {
     createdAt,
     id,
     images,
+    interest,
     municipality,
     name,
     postcode,
@@ -78,6 +79,43 @@ const FlatCard = props => {
     dispatch(updatePropertyInterest({ propertyId: id, interested: false }));
   }
 
+  function renderInterestButtons() {
+    if (!interest) {
+      return (
+        <>
+          <IconButton icon={<LikeOutlined />} onClick={handleLike} />
+          <IconButton icon={<DislikeOutlined />} onClick={handleDislike} />
+        </>
+      );
+    } else if (interest && interest.isInterested) {
+      return (
+        <>
+          <IconButton
+            icon={<LikeOutlined style={{ color: '#ff7c7c' }} />}
+            onClick={handleLike}
+          />
+          <IconButton
+            icon={<DislikeOutlined style={{ color: '#D3D3D3' }} />}
+            onClick={handleDislike}
+          />
+        </>
+      );
+    } else if (interest && !interest.isInterested) {
+      return (
+        <>
+          <IconButton
+            icon={<LikeOutlined style={{ color: '#D3D3D3' }} />}
+            onClick={handleLike}
+          />
+          <IconButton
+            icon={<DislikeOutlined style={{ color: '#ff7c7c' }} />}
+            onClick={handleDislike}
+          />
+        </>
+      );
+    }
+  }
+
   return (
     <div className="flat-card">
       <div className="body">
@@ -96,12 +134,7 @@ const FlatCard = props => {
           </div>
           <div className="description"></div>
         </div>
-        <div className="actions">
-          <>
-            <IconButton icon={<LikeOutlined />} onClick={handleLike} />
-            <IconButton icon={<DislikeOutlined />} onClick={handleDislike} />
-          </>
-        </div>
+        <div className="actions">{renderInterestButtons()}</div>
       </div>
       <div className="images">
         <Carousel className="card-image-carousel">

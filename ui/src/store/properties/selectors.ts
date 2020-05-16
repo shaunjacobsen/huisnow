@@ -1,6 +1,4 @@
-export const getProperties = state => {
-  return state.properties.data;
-};
+export const getProperties = state => state.properties.data;
 
 export const getTotalProperties = state => state.properties.total;
 
