@@ -6,8 +6,11 @@ import {
   handleUpdateById,
   handleDelete,
 } from '../controllers/properties';
+import { authenticate } from '../middleware/authenticate';
 
 const router = express.Router();
+
+router.use(authenticate({ required: false }));
 
 router.get('/', handleGetAll);
 

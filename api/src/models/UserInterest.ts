@@ -46,9 +46,9 @@ UserInterest.init(
   },
 );
 
-UserInterest.hasOne(Property, {
-  foreignKey: { name: 'id' },
-});
+// UserInterest.hasOne(Property, {
+//   foreignKey: { name: 'id' },
+// });
 
 UserInterest.sync({ alter: true }).then(() =>
   console.log('UserInterest table synced'),

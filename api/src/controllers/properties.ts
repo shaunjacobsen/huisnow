@@ -1,17 +1,40 @@
 import express from 'express';
+
 import paginate, { formatPaginated } from '../utils/paginate';
 import Property from '../models/Property';
+import UserInterest from '../models/UserInterest';
+
+import { AuthenticatedRequest } from '../types';
+import User from '../models/User';
+
+function joinWithUserInterest(user: User | null | undefined): {} {
+  console.log('USER', user);
+  if (!user) return {};
+
+  return {
+    include: [
+      {
+        model: UserInterest,
+        required: false,
+        where: { user_id: user.id },
+      },
+    ],
+  };
+}
 
 export const handleGetAll = async (
-  req: express.Request,
+  req: AuthenticatedRequest,
   res: express.Response,
 ) => {
   const { page, size } = req.query;
   const pagination = { page: Number(page) || 0, size: Number(size) || 10 };
+
   const all = await Property.findAndCountAll({
     ...paginate(pagination),
+    ...joinWithUserInterest(req.user),
     order: [['created_at', 'DESC']],
   });
+
   res.json(formatPaginated(all, pagination));
 };
 

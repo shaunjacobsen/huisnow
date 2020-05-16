@@ -50,6 +50,8 @@ Property.init(
   },
 );
 
+Property.hasMany(UserInterest, { foreignKey: 'propertyId' });
+
 Property.sync({ alter: true }).then(() => console.log('property table synced'));
 
 export default Property;
