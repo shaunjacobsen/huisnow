@@ -1,7 +1,3 @@
-export const getCurrentUser = state => {
-  return state.auth.user;
-};
+export const getCurrentUser = state => state.auth.user;
 
-export const isSigningIn = state => {
-  return state.auth.loading;
-};
+export const isSigningIn = state => state.auth.loading;

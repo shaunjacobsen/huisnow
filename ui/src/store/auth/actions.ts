@@ -13,7 +13,7 @@ export const signIn = (payload: { email: string; password: string }) => {
     try {
       const requester = await propertyRequester();
       const response = await requester.post('/user/sign_in', payload);
-      const token = response.headers['X-auth'];
+      const token = response.config.headers['X-auth'];
 
       firebase.auth
         .signInWithEmailAndPassword(response.data.user.email, payload.password)
@@ -30,7 +30,7 @@ export const signIn = (payload: { email: string; password: string }) => {
   };
 };
 
-export const getUser = () => {
+export const fetchUser = () => {
   return async (dispatch: Dispatch) => {
     dispatch({ type: 'AUTH:GET_USER/START' });
 
@@ -41,11 +41,8 @@ export const getUser = () => {
       return;
     }
     try {
-      const response = await axios.get(`${process.env.API_URL}/user`, {
-        headers: {
-          'X-auth': token,
-        },
-      });
+      const requester = await propertyRequester({ authRequired: true });
+      const response = await requester.get('/user');
       // const username = models.
       // const userData = {
       //   userId: response.data.uid,

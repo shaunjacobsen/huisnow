@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Carousel, Tag } from 'antd';
 import Icon, {
   CalendarOutlined,
   LikeOutlined,
+  LoadingOutlined,
   DislikeOutlined,
   SendOutlined,
 } from '@ant-design/icons';
@@ -34,7 +35,21 @@ function renderTimeSincePosting(time) {
   return <Tag color={colour}>{verschil} ago</Tag>;
 }
 
+const IconButton = props => {
+  const { icon, loading, onClick } = props;
+
+  const loadingIcon = <LoadingOutlined />;
+
+  return (
+    <div className="icon-button" onClick={onClick}>
+      {loading ? loadingIcon : icon}
+    </div>
+  );
+};
+
 const FlatCard = props => {
+  const [currentAction, setCurrentAction] = useState(undefined);
+
   const {
     agent,
     availableFrom,
@@ -54,7 +69,13 @@ const FlatCard = props => {
   const dispatch = useDispatch();
 
   function handleLike() {
+    setCurrentAction('LIKE');
     dispatch(updatePropertyInterest({ propertyId: id, interested: true }));
+  }
+
+  function handleDislike() {
+    setCurrentAction('DISLIKE');
+    dispatch(updatePropertyInterest({ propertyId: id, interested: false }));
   }
 
   return (
@@ -77,8 +98,8 @@ const FlatCard = props => {
         </div>
         <div className="actions">
           <>
-            <Button icon={<LikeOutlined />} onClick={handleLike} />
-            <DislikeOutlined />
+            <IconButton icon={<LikeOutlined />} onClick={handleLike} />
+            <IconButton icon={<DislikeOutlined />} onClick={handleDislike} />
           </>
         </div>
       </div>

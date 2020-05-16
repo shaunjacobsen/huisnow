@@ -1,31 +1,41 @@
 import React, { Fragment, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import firebase from './../firebase';
-import { setAuth, unsetAuth, setToken } from './../../store/auth/actions';
+import {
+  setAuth,
+  unsetAuth,
+  setToken,
+  fetchUser,
+} from './../store/auth/actions';
 
-export const AuthWatcher = ({ user, setUser, unsetUser, setToken }) => {
+export const AuthWatcher = props => {
+  const user = useSelector(state => state.auth.user);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    firebase.auth.onAuthStateChanged(function(user) {
+    firebase.auth.onAuthStateChanged(function (user) {
       if (user) {
-        setUser(user);
+        dispatch(fetchUser());
+        // dispatch(setAuth({ user: user }));
         user.getIdToken().then(token => {
-          setToken(token);
+          dispatch(setToken({ token }));
         });
       } else if (!user) {
-        unsetUser();
+        dispatch(unsetAuth());
       }
     });
   }, [firebase]);
 
   useEffect(() => {
-    firebase.auth.onIdTokenChanged(function(user) {
+    firebase.auth.onIdTokenChanged(function (user) {
       if (user) {
         user.getIdToken().then(token => {
-          setToken(token);
+          dispatch(setToken({ token }));
         });
       } else if (!user) {
-        unsetUser();
+        dispatch(unsetAuth());
       }
     });
   }, [firebase]);
@@ -33,12 +43,4 @@ export const AuthWatcher = ({ user, setUser, unsetUser, setToken }) => {
   return <Fragment></Fragment>;
 };
 
-const mapStateToProps = state => ({ user: state.auth.user });
-
-const mapDispatchToProps = dispatch => ({
-  setUser: user => dispatch(setAuth({ user: user })),
-  unsetUser: () => dispatch(unsetAuth()),
-  setToken: token => dispatch(setToken({ token })),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(AuthWatcher);
+export default AuthWatcher;

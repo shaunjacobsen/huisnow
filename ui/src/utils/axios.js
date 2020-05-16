@@ -22,7 +22,8 @@ async function getHeaders(user) {
 }
 
 const propertyRequester = async (options = { authRequired: false }) => {
-  let user = await currentUser();
+  let user = await Firebase.auth.currentUser;
+
   if (!options.authRequired && !user) {
     return axios.create({
       baseURL: process.env.REACT_APP_PROPERTY_API || 'http://localhost:4000',

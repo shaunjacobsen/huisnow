@@ -16,6 +16,7 @@ import {
   getProperties,
   getTotalProperties,
 } from '../store/properties/selectors';
+import { getCurrentUser } from '../store/auth/selectors';
 
 const renderRecentProperty = ({ title, viewingTime }) => {
   function renderViewingTime() {
@@ -40,6 +41,7 @@ const renderRecentProperty = ({ title, viewingTime }) => {
 };
 
 export const NewFlats = props => {
+  const user = useSelector(getCurrentUser);
   const properties = useSelector(getProperties);
   const totalProperties = useSelector(getTotalProperties);
   const pageProperties = useSelector(getCurrentPropertiesPage);
@@ -47,7 +49,7 @@ export const NewFlats = props => {
 
   useEffect(() => {
     dispatch(fetchProperties());
-  }, []);
+  }, [user]);
 
   function handlePaginate(page, size) {
     const zeroIndexedPage = page - 1;

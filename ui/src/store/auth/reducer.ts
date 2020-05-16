@@ -1,7 +1,7 @@
 import { pick } from 'lodash';
 
 const initialState = {
-  loading: false,
+  loading: true,
   error: undefined,
   user: undefined,
 };
@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
         ...initialState,
         loading: false,
         error: undefined,
-        user: action.payload,
+        user: action.payload.user,
       };
     case 'AUTH:SET_USER':
       return {
@@ -43,11 +43,11 @@ export default (state = initialState, action) => {
           ...pick(action.payload.user, ['uid', 'username', 'avatar', 'email']),
         },
       };
-    case 'AUTH:SET_TOKEN':
-      return {
-        ...state,
-        user: Object.assign(state.user, { token: action.payload.token }),
-      };
+    // case 'AUTH:SET_TOKEN':
+    //   return {
+    //     ...state,
+    //     user: Object.assign(state.user, { token: action.payload.token }),
+    //   };
     default:
       return state;
   }

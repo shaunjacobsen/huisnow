@@ -10,7 +10,6 @@ interface PaginationPayload {
 export const fetchProperties = (
   payload: PaginationPayload = { page: 0, size: 10 },
 ) => {
-  console.log('called');
   return async (dispatch: Dispatch) => {
     dispatch({ type: 'PROPERTIES:GET/START' });
     try {
