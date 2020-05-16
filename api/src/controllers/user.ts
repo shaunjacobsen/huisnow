@@ -10,10 +10,7 @@ export const handleGetCurrentUser = async (
   res: Response,
 ) => {
   try {
-    res.json({
-      status: 'OK',
-      user: req.user,
-    });
+    res.json({ user: req.user });
   } catch (e) {
     res.status(500).send({ error: e });
   }

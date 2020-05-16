@@ -2,7 +2,11 @@ import express from 'express';
 
 import { authenticate } from '../middleware/authenticate';
 
-import { handleCreateUser, handleSignIn } from './../controllers/user';
+import {
+  handleCreateUser,
+  handleSignIn,
+  handleGetCurrentUser,
+} from './../controllers/user';
 
 const router = express.Router();
 
@@ -11,6 +15,7 @@ router.post('/', handleCreateUser);
 router.post('/sign_in', handleSignIn);
 
 // authenticated routes
-router.use(authenticate);
+router.use(authenticate());
+router.get('/', handleGetCurrentUser);
 
 export default router;
