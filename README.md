@@ -17,6 +17,12 @@ This repository contains the code for several services:
 5. a. If there is a link to the next page of results, steps 3 and 4 repeat.
 5. b. If there is no link to the next page of results, the lambda function terminates.
 
+## Cloud Architecture
+This is run on several AWS services:
+**EC2** for hosting the API and Search services, the Postgres database, and Redis database.
+**Lambda functions** for serverless execution of the scraper service.
+**Cloudwatch events** for invoking the Lambda function.
+
 ## Development
 1. Run `docker-compose up redis postgres` to get the database systems running locally
 2. Run `yarn dev` in api/ directory to get the development API running locally
@@ -70,7 +76,7 @@ REDIS_PASSWORD=
 Finally you are ready to deploy the service. In the `huisnow/` directory, run `docker-compose up -d` `-d` ensures there is no output to the terminal so you can close the window.
 
 #### Troubleshooting
-*API has issues connecting to Postgres or Redis*
+**API has issues connecting to Postgres or Redis**
 Ensure that the environment variables are set to use the Docker hostnames instead of localhost. This is because each container's localhost is its own localhost, not the machine's. For instance, the `REDIS_HOST` env var in development is `localhost`, but on production it needs to be `redis`, because this is the Docker network's hostname. It automatically maps it to the proper hostname in Docker like ✨magic✨.
 
 
