@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 
 require('dotenv').config();
 
@@ -11,13 +12,15 @@ import userRouter from './router/user';
 import Property from './models/Property';
 import UserInterest from './models/UserInterest';
 
-import './config/db';
+import sequelize from './config/db';
 import './config/redis';
 
 Property;
 UserInterest;
 
 const app = express();
+
+app.use(morgan('tiny'));
 
 app.use(helmet());
 app.use(cors({ origin: 'http://localhost:3000' }));
