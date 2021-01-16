@@ -4,7 +4,7 @@ import redisClient from './redis';
 
 require('dotenv').config();
 
-const apiUrl = process.env.API_URL || 'http://localhost:4000/properties';
+const apiUrl = process.env.API_URL || 'http://localhost:4000';
 const scraperUrl = process.env.SCRAPER_URL || 'http://localhost:4001';
 
 const SOURCE = 'pararius';
