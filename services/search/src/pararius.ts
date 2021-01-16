@@ -117,8 +117,12 @@ export async function crawl(url: string): Promise<CrawlData> {
   const promises: Promise<any>[] = [];
 
   results.each((idx, result) => {
+    // the partial url of the result
     const url = $(result).find('h2 a').attr('href');
-    const { groups } = url.match(/\/(?<id>PR[0-9]+)\//);
+    // generate a property id from the result
+    // the URL is like /woon_type/locality/hash/street
+    // we will consider the hash/street as a unique combination suitable for an id
+    const { groups } = url.match(/\/.+\/.+\/(?<id>.+\/.+)/);
     const propertyId = groups.id;
 
     const images: string[] = [];
