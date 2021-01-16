@@ -4,7 +4,6 @@ require('dotenv').config();
 const url: string | undefined = process.env.DATABASE_URL;
 
 if (!url) throw new Error('No database URL defined');
-console.log(url);
 
 const sequelize = new Sequelize(url, {});
 
