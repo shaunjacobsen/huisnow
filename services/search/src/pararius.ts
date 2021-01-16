@@ -141,6 +141,7 @@ export async function crawl(url: string): Promise<CrawlData> {
       url,
       coords: [],
       dateAvailable: undefined,
+      constructionYear: undefined,
     };
 
     data.push(info);

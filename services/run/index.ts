@@ -31,6 +31,7 @@ function requestCreate(property: any) {
     surface: property.surface,
     images: property.images,
     availableFrom: property.availableFrom,
+    constructionYear: property.constructionYear,
   };
 
   console.log(
@@ -41,7 +42,7 @@ function requestCreate(property: any) {
   );
   return new Promise((resolve, reject) =>
     axios
-      .post(`${apiUrl}/`, data)
+      .post(`${apiUrl}/properties`, data)
       .then(() => {
         savePropertyToRedis(property);
       })
@@ -100,7 +101,7 @@ async function saveResults(results: any[]): Promise<SaveResultsResponse> {
 }
 
 async function fetchResults(url: string) {
-  const response = await axios.get(`${scraperUrl}/run`, {
+  const response = await axios.get(`${scraperUrl}/search`, {
     params: {
       search_url: url,
     },

@@ -18,6 +18,7 @@ class Property extends Model {
   public images?: string[];
   public availableFrom?: Date;
   public coords?: string;
+  public constructionYear?: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -40,6 +41,7 @@ Property.init(
     images: DataTypes.ARRAY(DataTypes.STRING),
     availableFrom: DataTypes.DATE,
     coords: DataTypes.GEOMETRY('POINT'),
+    constructionYear: DataTypes.INTEGER,
   },
   {
     sequelize,

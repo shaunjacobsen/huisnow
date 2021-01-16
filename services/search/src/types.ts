@@ -12,4 +12,5 @@ export interface PropertyData {
   url: string;
   dateAvailable: string;
   coords: number[];
+  constructionYear: number;
 }
