@@ -6,7 +6,7 @@ This repository contains the code for several services:
 - **Search API**: Node.js Express API handles scraping the target website and returning the data.
 - **Run function**: Serverless function deployed on AWS Lambda to invoke the Search API repeatedly until all results are fetched.
 - **Web application**: In development; will use Properties API.
-- **iOS application**: In development; will use Properties API.
+- **iOS application**: In development; available at [this repo](https://github.com/shaunjacobsen/huisnow-ios)
 - **Postgres**: Relational database for storing properties and other data.
 
 ## Workflow
