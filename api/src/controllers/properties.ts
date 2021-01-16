@@ -80,21 +80,18 @@ export const handleCreate = async (
     ? req.body.map(datum => {
         return { ...datum, coords: convertCoordsToGeoJson(datum.coords) };
       })
-    : { ...req.body, coords: convertCoordsToGeoJson(req.body.coords) };
-
-  const action = Array.isArray(data)
-    ? Property.bulkCreate(data)
-    : Property.create(data);
+    : [{ ...req.body, coords: convertCoordsToGeoJson(req.body.coords) }];
 
   try {
-    const result = await action;
-    res.json(result);
+    const result = await Property.bulkCreate(data);
+    return res.json(result);
   } catch (e) {
+    console.log('error?');
     const errors = getErrors(e);
     if (errors.find(error => error === 'not_unique')) {
       return res.status(400).json({ error: 'not_unique' });
     }
-    res.status(400).json(e);
+    return res.status(400).json(e);
   }
 };
 
