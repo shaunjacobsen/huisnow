@@ -8,7 +8,7 @@ firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(
     require(path.join(
       __dirname,
-      '../../flatje-opzoeken-firebase-adminsdk-1plr2-43049aad7c.json',
+      '../../flatje-opzoeken-firebase-adminsdk-1plr2-98d1e50421.json',
     )),
   ),
   databaseURL: 'https://flatje-opzoeken.firebaseio.com',
