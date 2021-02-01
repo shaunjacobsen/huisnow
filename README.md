@@ -25,7 +25,7 @@ This is run on several AWS services:
 
 ## Development
 1. Run `docker-compose up redis postgres` to get the database systems running locally
-2. Run `yarn dev` in api/ directory to get the development API running locally
+2. Run `DATABASE_URL= REDIS_PORT= REDIS_HOST= yarn dev` in api/ directory to get the development API running locally, ensuring you set the runtime environment variables correctly
 3. Run `yarn dev` in services/search directory to get the search API (which scrapes sites) running locally
 
 ## Production deployment
