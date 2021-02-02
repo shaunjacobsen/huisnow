@@ -74,6 +74,14 @@ REDIS_PASSWORD=
 RABBITMQ_URL=
 ```
 
+`./services/notify/.env`:
+```
+TO_EMAIL=
+FROM_EMAIL=
+SENDGRID_API_KEY=
+RABBITMQ_URL=
+```
+
 Finally you are ready to deploy the service. In the `huisnow/` directory, run `docker-compose up -d` `-d` ensures there is no output to the terminal so you can close the window.
 
 #### Troubleshooting
