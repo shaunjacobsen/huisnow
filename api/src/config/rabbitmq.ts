@@ -1,6 +1,6 @@
 import amqp from 'amqplib';
 
-const rabbitURL: string = process.env.RABBITMQ_URL || 'amqp://localhost:15672';
+const rabbitURL: string = process.env.RABBITMQ_URL || '';
 
 let connection = amqp.connect(rabbitURL, (err: Error, cxn: amqp.Connection) => {
   if (err) {

@@ -8,6 +8,7 @@ export const publishToQueue = async (queueName: string, data: any) => {
   console.log('channel', channel);
   channel()
     .then(channel => {
+      console.log('publishing to queue', queueName, encode(data));
       channel.sendToQueue(queueName, encode(data));
     })
     .catch(e => {
