@@ -6,3 +6,4 @@ yarn-error*
 services/run/*.js
 .DS_Store
 yarn.lock
+dist/

@@ -50,14 +50,26 @@ services:
 
   rabbitmq:
     image: bitnami/rabbitmq:latest
-    depends_on:
-      - redis
     ports:
     - "15672:5672"
     - "15671:5671"
     - "15000:15672" # admin panel
     volumes:
     - mqdata:/bitnami
+
+  service-notify:
+    build:
+      context: ./services/notify
+      dockerfile: Dockerfile
+    command: yarn start
+    depends_on:
+      - rabbitmq
+    env_file: ./services/notify/.env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./services/notify:/app
+      - /app/node_modules
 
 volumes:
   pgdata:
