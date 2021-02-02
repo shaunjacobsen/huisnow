@@ -6,6 +6,9 @@ import UserInterest from '../models/UserInterest';
 
 import { AuthenticatedRequest } from '../types';
 import User from '../models/User';
+import { publishToQueue } from '../queue';
+
+const NEW_PROPERTY_QUEUE = 'new_properties';
 
 function joinWithUserInterest(user: User | null | undefined): {} {
   console.log('USER', user);
@@ -84,6 +87,9 @@ export const handleCreate = async (
 
   try {
     const result = await Property.bulkCreate(data);
+    result.forEach(async r => {
+      await publishToQueue(NEW_PROPERTY_QUEUE, r);
+    });
     return res.json(result);
   } catch (e) {
     console.log('error?');
