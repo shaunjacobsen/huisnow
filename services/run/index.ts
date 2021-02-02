@@ -32,6 +32,7 @@ function requestCreate(property: any) {
     images: property.images,
     availableFrom: property.availableFrom,
     constructionYear: property.constructionYear,
+    url: property.url,
   };
 
   console.log(

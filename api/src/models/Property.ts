@@ -19,6 +19,7 @@ class Property extends Model {
   public availableFrom?: Date;
   public coords?: string;
   public constructionYear?: number;
+  public url?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -42,6 +43,7 @@ Property.init(
     availableFrom: DataTypes.DATE,
     coords: DataTypes.GEOMETRY('POINT'),
     constructionYear: DataTypes.INTEGER,
+    url: DataTypes.STRING,
   },
   {
     sequelize,
