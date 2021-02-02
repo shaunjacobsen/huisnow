@@ -24,8 +24,8 @@ This is run on several AWS services:
 **Cloudwatch events** for invoking the Lambda function.
 
 ## Development
-1. Run `docker-compose up redis postgres` to get the database systems running locally
-2. Run `DATABASE_URL= REDIS_PORT= REDIS_HOST= yarn dev` in api/ directory to get the development API running locally, ensuring you set the runtime environment variables correctly
+1. Run `docker-compose up redis postgres rabbitmq` to get the database and queue systems running locally
+2. Run `DATABASE_URL= REDIS_PORT= REDIS_HOST= RABBITMQ_URL= yarn dev` in api/ directory to get the development API running locally, ensuring you set the runtime environment variables correctly
 3. Run `yarn dev` in services/search directory to get the search API (which scrapes sites) running locally
 
 ## Production deployment
@@ -71,6 +71,7 @@ PORT=
 REDIS_PORT=
 REDIS_HOST=
 REDIS_PASSWORD=
+RABBITMQ_URL=
 ```
 
 Finally you are ready to deploy the service. In the `huisnow/` directory, run `docker-compose up -d` `-d` ensures there is no output to the terminal so you can close the window.

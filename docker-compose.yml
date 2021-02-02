@@ -8,6 +8,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - rabbitmq
     env_file: ./api/.env
     ports:
       - "4000:4000"
@@ -47,6 +48,18 @@ services:
     volumes:
       - redisdata:/bitnami/redis/data
 
+  rabbitmq:
+    image: bitnami/rabbitmq:latest
+    depends_on:
+      - redis
+    ports:
+    - "15672:5672"
+    - "15671:5671"
+    - "15000:15672" # admin panel
+    volumes:
+    - mqdata:/bitnami
+
 volumes:
   pgdata:
   redisdata:
+  mqdata:
