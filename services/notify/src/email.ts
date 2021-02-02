@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import sg from '@sendgrid/mail';
 
+var emailFile = require('./public/email.html');
+
 sg.setApiKey(process.env.SENDGRID_API_KEY);
 
 type Listing = {
@@ -28,7 +30,7 @@ type Listing = {
 };
 
 function getEmailHTML() {
-  const file = path.resolve(__dirname, './public/email.html');
+  const file = path.resolve(__dirname, 'public/email.html');
   return fs.readFileSync(file, 'utf8');
 }
 
