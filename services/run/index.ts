@@ -40,6 +40,8 @@ function requestCreate(property: any) {
     data.source,
     'Identifier: ',
     data.sourceIdentifier,
+    'URL: ',
+    data.url,
   );
   return new Promise((resolve, reject) =>
     axios

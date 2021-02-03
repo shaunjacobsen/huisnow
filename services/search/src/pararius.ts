@@ -86,7 +86,7 @@ async function processListing(listing: PropertyData): Promise<PropertyData> {
     $('.listing-detail-map').data('listing-detail-map-longitude'),
   );
 
-  return {
+  const data = {
     ...listing,
     title,
     images,
@@ -98,6 +98,10 @@ async function processListing(listing: PropertyData): Promise<PropertyData> {
     municipality,
     price,
   };
+
+  console.log('PROCESSING LISTING: ', data);
+
+  return data;
 }
 
 export async function crawl(url: string): Promise<CrawlData> {
