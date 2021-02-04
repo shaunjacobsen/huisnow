@@ -2,7 +2,8 @@
 
 ## Objective
 This is a basic service to fetch and organize housing to purchase in the Netherlands. I created this in order to give myself the earliest possible notification (and best possible chance of a viewing without a realtor) when a new home fitting my search crtieria is posted to popular online housing search engines.
-It has a contrived scalable architecture include microservices deployed using Docker to demonstrate my competency in designing and deploying scalable cloud architecture. Nautrally, elements such as a message queue for new housing notifications would mean lots of new properties are posted every 30 minutes, meaning there is probably no housing shortage in the Netherlands, rendering the entire point of this system pointless... you get the picture :-)
+
+It has a contrived scalable architecture including microservices deployed using Docker to demonstrate my competency in designing and deploying scalable cloud architecture. Nautrally, elements such as a message queue for new housing notifications would mean lots of new properties are posted every 30 minutes, meaning there is probably no housing shortage in the Netherlands, rendering the entire point of this system pointless... you get the picture :-)
 
 ## Services
 This repository contains the code for several services:
