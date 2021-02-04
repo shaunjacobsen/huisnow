@@ -5,21 +5,30 @@ This repository contains the code for several services:
 - **Properties API**: Node.js Express API handles listing, creating, and modifying property listings and showings.
 - **Search API**: Node.js Express API handles scraping the target website and returning the data.
 - **Run function**: Serverless function deployed on AWS Lambda to invoke the Search API repeatedly until all results are fetched.
+- **Notify service**: Consumes RabbitMQ messages and dispatches a notification (currently an email) about a new property.
 - **Web application**: In development; will use Properties API.
 - **iOS application**: In development; available at [this repo](https://github.com/shaunjacobsen/huisnow-ios)
+
+
+## Dependencies
 - **Postgres**: Relational database for storing properties and other data.
+- **Redis**: For storing existing properties by ID; speeds up the lambda function, lowering its cost per invocation.
+- **RabbitMQ**: Message queue used to dispatch newly found properties so an email can be sent immediately.
 
 ## Workflow
 1. An AWS CloudWatch event is triggered every 30 minutes, triggering a Lambda function. This lambda function takes a single `url` parameter from a JSON payload.key
 2. The lambda function calls the Search API with the URL as a query string parameter.
 3. The Search API scrapes the target web page and returns the listing data as well as a link to the next page of results.
 4. The lambda function then calls the Properties API to save the data to the database.
-5. a. If there is a link to the next page of results, steps 3 and 4 repeat.
-5. b. If there is no link to the next page of results, the lambda function terminates.
+4. 7. a. If there is a link to the next page of results, steps 3 and 4 repeat.
+4. b. If there is no link to the next page of results, the lambda function terminates.
+4. c. If there are too many existing saved results on the page, the lambda function terminates.
+6. A message with a new property is sent to a RabbitMQ queue
+7. A consumer service checks for new messages in the queue and dispatches an email using SendGrid.
 
 ## Cloud Architecture
 This is run on several AWS services:
-**EC2** for hosting the API and Search services, the Postgres database, and Redis database.
+**EC2** for hosting the API, Notify, and Search services, the RabbitMQ message queue, the Postgres database, and Redis database.
 **Lambda functions** for serverless execution of the scraper service.
 **Cloudwatch events** for invoking the Lambda function.
 
