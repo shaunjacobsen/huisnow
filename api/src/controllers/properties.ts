@@ -48,7 +48,10 @@ export const handleGetAll = async (
   const all = await Property.findAndCountAll({
     ...paginate(pagination),
     ...joinWithUserInterest(req.user),
-    include: [{ model: PropertyViewing, as: 'viewing' }],
+    include: [
+      { model: PropertyViewing, as: 'viewing' },
+      { model: UserInterest },
+    ],
     order: [['created_at', 'DESC']],
   });
 
@@ -64,7 +67,10 @@ export const handleGetById = async (
 
   try {
     const record = await Property.findByPk(id, {
-      include: [{ model: PropertyViewing, as: 'viewing' }],
+      include: [
+        { model: PropertyViewing, as: 'viewing' },
+        { model: UserInterest },
+      ],
     });
     if (!record) return res.send(404);
 

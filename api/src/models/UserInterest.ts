@@ -1,6 +1,7 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import sequelize from './../config/db';
 import Property from './Property';
+import User from './User';
 
 export enum UserInterestStatus {
   pendingAction,
@@ -18,8 +19,6 @@ class UserInterest extends Model {
   public hasContacted!: boolean;
   public contactedDate?: Date;
   public status!: UserInterestStatus;
-  public viewingTime?: Date;
-  public viewingNotes?: string;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -28,27 +27,26 @@ class UserInterest extends Model {
 UserInterest.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    propertyId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
+    propertyId: {
+      type: DataTypes.INTEGER,
+      references: { model: Property, key: 'id' },
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      references: { model: User, key: 'id' },
+    },
     isInterested: DataTypes.BOOLEAN,
     hasContacted: DataTypes.BOOLEAN,
     contactedDate: DataTypes.DATE,
     status: DataTypes.STRING,
-    viewingTime: DataTypes.DATE,
-    viewingNotes: DataTypes.TEXT,
   },
   {
     sequelize,
     tableName: 'user_interests',
     underscored: true,
-    paranoid: true,
     indexes: [{ unique: true, fields: ['user_id', 'property_id'] }],
   },
 );
-
-// UserInterest.hasOne(Property, {
-//   foreignKey: { name: 'id' },
-// });
 
 UserInterest.sync({ alter: true }).then(() =>
   console.log('UserInterest table synced'),

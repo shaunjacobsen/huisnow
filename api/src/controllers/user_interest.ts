@@ -27,11 +27,12 @@ async function updateOrCreateInterestRecord(
 }
 
 export const handleTogglePropertySave = async (
-  req: AuthenticatedRequest,
+  // req: AuthenticatedRequest,
+  req: Request,
   res: Response,
 ) => {
-  const userId = req.user!.id;
-  const propertyId = Number(req.params.propertyId);
+  const userId = 1;
+  const propertyId = Number(req.params.id);
 
   try {
     const existingRecord = await UserInterest.findOne({
@@ -57,19 +58,13 @@ export const handleTogglePropertySave = async (
 };
 
 export const handleUpdatePropertyInterest = async (
-  req: AuthenticatedRequest,
+  // req: AuthenticatedRequest,
+  req: Request,
   res: Response,
 ) => {
-  const userId = req.user!.id;
-  const propertyId = Number(req.params.propertyId);
-  const {
-    isInterested,
-    hasContacted,
-    contactedDate,
-    status,
-    viewingTime,
-    viewingNotes,
-  } = req.body;
+  const userId = 1;
+  const propertyId = Number(req.params.id);
+  const { isInterested, hasContacted, contactedDate, status } = req.body;
 
   try {
     const userInterestRecord = await updateOrCreateInterestRecord(
@@ -80,8 +75,6 @@ export const handleUpdatePropertyInterest = async (
         hasContacted,
         contactedDate,
         status,
-        viewingTime,
-        viewingNotes,
       },
     );
     res.json(userInterestRecord);

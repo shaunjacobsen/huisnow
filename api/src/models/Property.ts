@@ -56,7 +56,7 @@ Property.init(
 );
 
 Property.hasMany(UserInterest, { foreignKey: 'propertyId' });
-Property.hasOne(PropertyViewing, { foreignKey: 'propertyId', as: 'viewing' });
+Property.hasMany(PropertyViewing, { foreignKey: 'propertyId', as: 'viewing' });
 
 Property.sync({ alter: true }).then(() => console.log('property table synced'));
 

@@ -29,7 +29,7 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
 app.use('/properties', propertiesRouter);
-app.use('/interest', userInterestRouter);
+// app.use('/interest', userInterestRouter);
 app.use('/user', userRouter);
 
 const port = process.env.PORT || 4000;
