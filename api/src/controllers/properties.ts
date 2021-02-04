@@ -63,7 +63,9 @@ export const handleGetById = async (
   if (!id) return res.send(400);
 
   try {
-    const record = await Property.findByPk(id);
+    const record = await Property.findByPk(id, {
+      include: [{ model: PropertyViewing, as: 'viewing' }],
+    });
     if (!record) return res.send(404);
 
     res.json(record);
