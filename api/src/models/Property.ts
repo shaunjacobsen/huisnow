@@ -1,5 +1,6 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import sequelize from './../config/db';
+import PropertyViewing from './PropertyViewing';
 import UserInterest from './UserInterest';
 
 class Property extends Model {
@@ -55,6 +56,7 @@ Property.init(
 );
 
 Property.hasMany(UserInterest, { foreignKey: 'propertyId' });
+Property.hasOne(PropertyViewing, { foreignKey: 'propertyId', as: 'viewing' });
 
 Property.sync({ alter: true }).then(() => console.log('property table synced'));
 

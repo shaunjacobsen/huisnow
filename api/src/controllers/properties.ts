@@ -3,9 +3,11 @@ import express from 'express';
 import paginate, { formatPaginated } from '../utils/paginate';
 import Property from '../models/Property';
 import UserInterest from '../models/UserInterest';
+import User from '../models/User';
+import PropertyViewing from '../models/PropertyViewing';
 
 import { AuthenticatedRequest } from '../types';
-import User from '../models/User';
+
 import { publishToQueue } from '../queue';
 
 const NEW_PROPERTY_QUEUE = 'new_properties';
@@ -25,6 +27,17 @@ function joinWithUserInterest(user: User | null | undefined): {} {
   };
 }
 
+function joinWithPropertyViewing() {
+  return {
+    include: [
+      {
+        model: PropertyViewing,
+        required: false,
+      },
+    ],
+  };
+}
+
 export const handleGetAll = async (
   req: AuthenticatedRequest,
   res: express.Response,
@@ -35,6 +48,7 @@ export const handleGetAll = async (
   const all = await Property.findAndCountAll({
     ...paginate(pagination),
     ...joinWithUserInterest(req.user),
+    include: [{ model: PropertyViewing, as: 'viewing' }],
     order: [['created_at', 'DESC']],
   });
 
@@ -97,7 +111,7 @@ export const handleCreate = async (
     if (errors.find(error => error === 'not_unique')) {
       return res.status(400).json({ error: 'not_unique' });
     }
-    return res.status(400).json(e);
+    return res.status(400).json({ error: e });
   }
 };
 
@@ -115,7 +129,7 @@ export const handleUpdateById = async (
     const updated = await record.update(req.body);
     res.json(updated);
   } catch (e) {
-    res.status(400).json(e);
+    res.status(400).json({ error: e });
   }
 };
 
@@ -133,6 +147,6 @@ export const handleDelete = async (
     await record.destroy();
     return res.send(200);
   } catch (e) {
-    res.status(400).json(e);
+    res.status(400).json({ error: e });
   }
 };

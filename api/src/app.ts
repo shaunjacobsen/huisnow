@@ -11,12 +11,14 @@ import userRouter from './router/user';
 
 import Property from './models/Property';
 import UserInterest from './models/UserInterest';
+import PropertyViewing from './models/PropertyViewing';
 
 import sequelize from './config/db';
 import './config/redis';
 
 Property;
 UserInterest;
+PropertyViewing;
 
 const app = express();
 
