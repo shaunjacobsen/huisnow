@@ -13,6 +13,7 @@ channel().then((canal) => {
   canal.consume(QUEUE_NAME, (msg) => {
     // when message received, do this
     const listing = decode(msg.content);
+    console.log('message received!', listing);
     // send the email and acknowledge
     sendEmail([listing])
       .then(() => {
