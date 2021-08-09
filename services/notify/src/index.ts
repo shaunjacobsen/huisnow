@@ -14,8 +14,10 @@ channel().then((canal) => {
     // when message received, do this
     const listing = decode(msg.content);
     // send the email and acknowledge
-    sendEmail([listing]).then(() => {
-      canal.ack(msg);
-    });
+    sendEmail([listing])
+      .then(() => {
+        canal.ack(msg);
+      })
+      .catch((e) => console.error('error, cannot send', e));
   });
 });

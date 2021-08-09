@@ -124,7 +124,7 @@ async function sendEmail(listings: Listing[]) {
       const sent = await sg.send(message);
       resolve(html);
     } catch (e) {
-      console.log(e);
+      console.log('sendgrid error', e);
       reject(e);
     }
   });
